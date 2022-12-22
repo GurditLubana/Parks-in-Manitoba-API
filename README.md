@@ -1,3 +1,4 @@
+![tutorial](tutorial.gif)
 # Parks-in-Manitoba-API
 
 
