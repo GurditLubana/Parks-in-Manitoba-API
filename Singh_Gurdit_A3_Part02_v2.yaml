@@ -1,0 +1,119 @@
+openapi: "3.0.0"
+
+info:
+  version: "1.0"
+  title: Parks in Manitoba API
+  description: "A simple API to get information about parks in Manitoba. It returns information about the operating hours and available amenities for convenience.
+There are plenty of parks and it is hard to keep track of them all, which this API serves to assist with."
+  contact:
+    name: API Manitoban Parks
+    url: https://api.parks-manitoba.ca/json
+
+servers:
+  - url: https://api.parks-manitoba.ca/json?name=whiteshell&month=6&formatted=1
+    description: Information server
+tags:
+  - name: parksManitoba
+  
+paths:
+  /parksInManitoba:
+    get:
+      tags: 
+        - parksManitoba
+      description: There is a single endpoint which can be accessed with a GET request to 
+      operationId: getParksInManitoba
+      parameters:
+        - name: name
+          in: query
+          description: "Name of the park"
+          required: true
+          schema:
+            type: string
+            format: string
+          example: "John, Gary"
+
+        - name: month
+          in: query
+          description: "Number of the month in a year"
+          required: true
+          schema:
+            type: number
+            format: int
+          example: "7"
+
+        - name: formatted
+          in: query
+          required: false
+          description: "0 or 1 (1 is default). Hours of operation in response will be expressed following ISO 8601"
+          schema:
+            type: integer
+            format: int32
+          example: 1
+      responses:
+        200:
+          description: Parks in Manitoba
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParksInManitobaResponse'
+        
+        400:        
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    ParksInManitobaResponse:
+      title: Parks Information
+      type: object
+      properties:
+        information:
+          type: object
+          properties:
+            park_name:
+              type: string
+              description: name of park
+              example: 'whiteshell'
+            hours_of_operation:
+              type: string
+              description: time of the day
+              example: '6:00 AM - 4:30 PM'
+            amenities:
+                  type: object
+                  properties:
+                    beach:
+                     type: string
+                     description: Does it have a beach
+                     example: 'yes'
+                    fishing:
+                     type: string
+                     description: Does it have a fishing area
+                     example: 'yes'
+                    hiking_trail:
+                     type: string
+                     description: Does it have a hiking trail
+                     example: 'yes'
+                    picnic_area:
+                     type: string
+                     description: Does it have a beach
+                     example: 'yes'
+                    golf:
+                     type: string
+                     description: Does it have a golf ground
+                     example: 'yes'
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          description: 404 Error
+        message:
+          description: Invalid name value
+              
+    
